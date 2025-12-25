@@ -6,7 +6,7 @@
             company_name: "LTIMINDTREE | SDET",
             years_experience: "1.5+ Years"
         };
-
+        
         // Theme Toggle Functionality
         const themeToggle = document.getElementById('theme-toggle');
         const body = document.body;
@@ -574,3 +574,15 @@ document.querySelectorAll(".nav-link").forEach(link => {
         }
     });
 });
+
+/* Visitors Count */
+fetch("https://api.countapi.xyz/hit/chimtu222-subhu-portfolio/visits")
+    .then(res => res.json())
+    .then(data => {
+        const el = document.getElementById("visitCount");
+        if (el) el.innerText = data.value;
+    })
+    .catch(() => {
+        const el = document.getElementById("visitCount");
+        if (el) el.innerText = "N/A";
+    });
