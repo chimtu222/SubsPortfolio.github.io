@@ -299,10 +299,35 @@ function calculateAge() {
    Knowledge Base
 ------------------------- */
 const knowledgeBase = {
-    education: "I completed my B.Tech in Computer Science & Engineering with strong hands-on experience in development and automation.",
-    experience: "I have 1.5+ years of experience working as an SDET at LTIMindtree.",
+    education: `
+        I completed my B.Tech in Computer Science & Engineering with strong hands-on experience in development and automation.
+        <br><br>
+        <strong>
+            <span class="chat-link" onclick="goToSection('education')">
+                Read more →
+            </span>
+        </strong>
+    `,
+
+    experience: `
+        I have 1.5+ years of experience working as an SDET at LTIMindtree.
+        <br><br>
+        <strong>
+            <span class="chat-link" onclick="goToSection('experience')">
+                Know more →
+            </span>
+        </strong>
+    `,
     age: `I was born on 17 Nov 2002, so I am ${calculateAge()} years old.`,
-    projects: "My key projects include a Medicine Inventory System, API Automation Frameworks, and responsive web applications.",
+    projects: `
+        My key projects include a Medicine Inventory System, API Automation Frameworks, and responsive web applications.
+        <br><br>
+        <strong>
+            <span class="chat-link" onclick="goToSection('projects')">
+                More info →
+            </span>
+        </strong>
+    `,
     location: "I am based in India and currently living in Balasore, Odisha with my parents."
 };
 
@@ -317,12 +342,91 @@ function resetChat() {
     chatSend.disabled = true;
 }
 
-function addMessage(text, type) {
+// function addMessage(text, type) {
+//     const msg = document.createElement("div");
+//     msg.className = `msg ${type}`;
+//     msg.textContent = text;
+//     chatBody.appendChild(msg);
+//     chatBody.scrollTop = chatBody.scrollHeight;
+// }
+function addMessage(content, type, isHTML = false) {
     const msg = document.createElement("div");
     msg.className = `msg ${type}`;
-    msg.textContent = text;
+
+    if (isHTML) {
+        msg.innerHTML = content;
+    } else {
+        msg.textContent = content;
+    }
+
     chatBody.appendChild(msg);
     chatBody.scrollTop = chatBody.scrollHeight;
+}
+
+function goToSection(sectionId) {
+    // close chat
+    chat.style.display = "none";
+    resetChat();
+
+    // mapping: section → page
+    const sectionPageMap = {
+        education: "home",
+        projects: "experience",
+        experience: "experience"
+    };
+
+    const pageId = sectionPageMap[sectionId] || sectionId;
+
+    // activate nav
+    document.querySelectorAll(".nav-link").forEach(link => {
+        link.classList.toggle(
+            "active",
+            link.getAttribute("data-page") === pageId
+        );
+    });
+
+    // show page
+    document.querySelectorAll(".page").forEach(page => {
+        page.classList.remove("active");
+    });
+
+    const page = document.getElementById(pageId);
+    if (!page) return;
+
+    page.classList.add("active");
+
+    // scroll to section
+    setTimeout(() => {
+        const target = document.getElementById(sectionId) || page;
+        target.scrollIntoView({ behavior: "smooth", block: "start" });
+    }, 150);
+}
+
+function navigateToContact() {
+    // close chat
+    chat.style.display = "none";
+    resetChat();
+
+    // activate nav
+    document.querySelectorAll(".nav-link").forEach(link => {
+        link.classList.toggle(
+            "active",
+            link.getAttribute("data-page") === "contact"
+        );
+    });
+
+    // show contact page
+    document.querySelectorAll(".page").forEach(page => {
+        page.classList.remove("active");
+    });
+
+    const contactPage = document.getElementById("contact");
+    if (contactPage) {
+        contactPage.classList.add("active");
+        setTimeout(() => {
+            contactPage.scrollIntoView({ behavior: "smooth" });
+        }, 100);
+    }
 }
 
 function showTyping() {
@@ -358,7 +462,8 @@ function showOptions() {
 
             setTimeout(() => {
                 typing.remove();
-                addMessage(knowledgeBase[key], "bot");
+                // addMessage(knowledgeBase[key], "bot");
+                addMessage(knowledgeBase[key], "bot", true);
             }, 700);
         };
         chatOptions.appendChild(btn);
@@ -414,15 +519,19 @@ chatSend.addEventListener("click", () => {
 
         // Show message and delay before closing
         addMessage(
-            "For detailed or personal queries, please visit the Contacts tab to connect with me 🙂",
+            "For detailed or personal queries, please visit the Contact tab to connect with me 🙂",
             "bot"
         );
 
         // give user 3 seconds to read before closing
+        // setTimeout(() => {
+        //     chat.style.display = "none";
+        //     resetChat();
+        // }, 3000);
         setTimeout(() => {
-            chat.style.display = "none";
-            resetChat();
-        }, 3000);
+              navigateToContact();
+           }, 3000);
+
     }, 800);
 });
 
